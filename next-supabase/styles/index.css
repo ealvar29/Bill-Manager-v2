@@ -1,0 +1,49 @@
+@tailwind base;
+
+/* Write your own custom base styles here */
+
+/* Start purging... */
+@tailwind components;
+/* Stop purging. */
+
+/* Write your own custom component styles here */
+.btn-black {
+  @apply px-4 py-2 font-bold text-center text-white bg-black border border-black rounded;
+}
+.btn-black:hover {
+  @apply text-black transition duration-150 bg-white;
+}
+.btn-black-outline {
+  @apply px-4 py-2 font-bold text-center text-black border border-black rounded;
+}
+.btn-black-outline:hover {
+  @apply text-white transition duration-150 bg-black;
+}
+
+/* Start purging... */
+@tailwind utilities;
+/* Stop purging. */
+
+/* Your own custom utilities */
+
+html,
+body,
+#__next {
+  height: 100vh;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 4rem;
+  font-weight: bold;
+  display: block;
+}
+
+.sbui-divider > span {
+  @apply text-purple-700 !important;
+}
+
+.dark a.sbui-typography-link,
+a.sbui-typography-link {
+  @apply text-purple-700 !important;
+}
