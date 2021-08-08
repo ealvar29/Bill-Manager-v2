@@ -5,98 +5,7 @@ import { Listbox, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { supabase } from "../lib/initSupabase";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
-
-// export default function Form() {
-//   const [newBillName, setNewBillName] = useState("");
-//   const [errorText, setError] = useState("");
-//   const [cost, setCost] = useState("0");
-//   const [dueDate, setDueDate] = useState(new Date());
-//   const [bills, setBills] = useState([]);
-
-//   const onSubmit = (event) => {
-//     event.preventDefault();
-//     if (newBillName === "") return;
-//     supabase
-//       .from("bills")
-//       .insert({
-//         billName: newBillName,
-//         cost: cost,
-//         due_date: dueDate,
-//         bill_type: selectedType.name,
-//         user_id: supabase.auth.user().id,
-//       })
-//       .single()
-//       .then(({ data, error }) => {
-//         console.log(data, error);
-//         if (!error) {
-//           setBills((prevBills) => [data, ...prevBills]);
-//         }
-//       });
-//   };
-//   return (
-//     <div className="w-full bg-grey-500">
-//       <div className="py-8 mx-auto">
-//         <div className="mx-auto bg-white rounded shadow w-96">
-//           <div className="px-8 py-4 mx-16 text-xl font-bold text-center text-black border-b border-grey-500">
-//             Enter Bill
-//           </div>
-//           <form>
-//             <div className="px-8 py-4">
-//               <div className="mb-4">
-//                 <Input
-//                   className="w-full px-3 py-3 font-bold rounded text-grey-darker"
-//                   label="Bill Name"
-//                   value={newBillName || ""}
-//                   onChange={(e) => {
-//                     setError("");
-//                     setNewBillName(e.target.value);
-//                   }}
-//                 />
-//               </div>
-//               <div className="mb-4">
-//                 <InputNumber
-//                   className="w-full px-3 py-5 font-bold border rounded text-grey-darker"
-//                   label="Input Amount"
-//                   max={1000000}
-//                   value={cost || 0}
-//                   onChange={(e) => {
-//                     setError("");
-//                     setCost(e.target.value);
-//                   }}
-//                 />
-//               </div>
-//               <div className="mb-4">
-//                 <Input
-//                   className="w-full px-3 py-3 font-bold text-grey-darker"
-//                   label="Due Date"
-//                   type="datetime-local"
-//                   value={dueDate || new Date()}
-//                   onChange={(e) => {
-//                     setError("");
-//                     setDueDate(e.target.value);
-//                   }}
-//                 />
-//               </div>
-//               <div className="mb-4">
-//                 <div className="w-full px-3 py-3 font-bold text-grey-darker">
-//                   <label>Bill Type</label>
-//                 </div>
-//               </div>
-//               <div className="mb-4">
-//                 <button
-//                   className="px-24 py-1 mx-16 mb-2 bg-blue-300 rounded-full"
-//                   onClick={onSubmit}
-//                 >
-//                   Add
-//                 </button>
-//               </div>
-//             </div>
-//           </form>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
+import Alert from "./Alert";
 
 export default function Todos({ user }) {
   const [todo, setTodos] = useState([]);
@@ -196,7 +105,7 @@ export default function Todos({ user }) {
       <div className="overflow-hidden bg-white rounded-md shadow">
         <ul>
           {bills.map((expense) => (
-            <Todo
+            <Bill
               key={expense.id}
               expense={expense}
               onDelete={() => deleteTodo(expense.id)}
@@ -208,7 +117,7 @@ export default function Todos({ user }) {
   );
 }
 
-const Todo = ({ expense, onDelete }) => {
+const Bill = ({ expense, onDelete }) => {
   const [isCompleted, setIsCompleted] = useState(expense.is_complete);
 
   const toggle = async () => {
@@ -278,9 +187,3 @@ const Todo = ({ expense, onDelete }) => {
     </li>
   );
 };
-
-const Alert = ({ text }) => (
-  <div className="p-4 my-3 bg-red-100 rounded-md">
-    <div className="text-sm leading-5 text-red-700">{text}</div>
-  </div>
-);
