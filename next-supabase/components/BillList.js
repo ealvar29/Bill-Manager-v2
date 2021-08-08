@@ -99,22 +99,28 @@ import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
 // }
 
 export default function Todos({ user }) {
-  const [todos, setTodos] = useState([]);
+  const [todo, setTodos] = useState([]);
   const [newTaskText, setNewTaskText] = useState("");
   const [errorText, setError] = useState("");
+
+  const [newBillName, setNewBillName] = useState("");
+  const [cost, setCost] = useState("0");
+  const [bills, setBills] = useState([]);
 
   useEffect(() => {
     fetchTodos();
   }, []);
 
   const fetchTodos = async () => {
-    let { data: todos, error } = await supabase
+    let { data, error } = await supabase
       .from("expenses")
       .select("*")
       .order("id", true);
+    console.log({ data });
     if (error) console.log("error", error);
-    else setTodos(todos);
+    else setBills(data);
   };
+
   const addTodo = async (billText) => {
     let billname = billText.trim();
     if (billname.length) {
@@ -130,34 +136,66 @@ export default function Todos({ user }) {
   const deleteTodo = async (id) => {
     try {
       await supabase.from("expenses").delete().eq("id", id);
-      setTodos(todos.filter((x) => x.id != id));
+      setBills(bills.filter((x) => x.id != id));
     } catch (error) {
       console.log("error", error);
     }
+  };
+
+  const onSubmit = async (event) => {
+    event.preventDefault();
+    if (newBillName === "") return;
+    await supabase
+      .from("expenses")
+      .insert({
+        billname: newBillName,
+        cost: cost,
+        user_id: supabase.auth.user().id,
+      })
+      .single()
+      .then(({ data, error }) => {
+        console.log(data, error);
+        if (!error) {
+          setBills((prevBills) => [...prevBills, data]);
+        }
+      });
   };
 
   return (
     <div className="w-full">
       <h1 className="mb-12">Todo List.</h1>
       <div className="flex gap-2 my-2">
-        <input
-          className="w-full p-2 rounded"
-          type="text"
-          placeholder="make coffee"
-          value={newTaskText}
-          onChange={(e) => {
-            setError("");
-            setNewTaskText(e.target.value);
-          }}
-        />
-        <button className="btn-black" onClick={() => addTodo(newTaskText)}>
+        <div className="mb-4">
+          <Input
+            className="w-full px-3 py-3 font-bold rounded text-grey-darker"
+            label="Bill Name"
+            value={newBillName || ""}
+            onChange={(e) => {
+              setError("");
+              setNewBillName(e.target.value);
+            }}
+          />
+        </div>
+        <div className="mb-4">
+          <InputNumber
+            className="w-full px-3 py-5 font-bold border rounded text-grey-darker"
+            label="Input Amount"
+            max={1000000}
+            value={cost}
+            onChange={(e) => {
+              setError("");
+              setCost(e.target.value);
+            }}
+          />
+        </div>
+        <button className="btn-black" onClick={onSubmit}>
           Add
         </button>
       </div>
       {!!errorText && <Alert text={errorText} />}
       <div className="overflow-hidden bg-white rounded-md shadow">
         <ul>
-          {todos.map((expense) => (
+          {bills.map((expense) => (
             <Todo
               key={expense.id}
               expense={expense}
@@ -178,7 +216,7 @@ const Todo = ({ expense, onDelete }) => {
       const { data, error } = await supabase
         .from("expenses")
         .update({ is_complete: !isCompleted })
-        .eq("id", billname.id)
+        .eq("id", expense.id)
         .single();
       if (error) {
         throw new Error(error);
@@ -201,6 +239,11 @@ const Todo = ({ expense, onDelete }) => {
         <div className="flex items-center flex-1 min-w-0">
           <div className="text-sm font-medium leading-5 truncate">
             {expense.billname}
+          </div>
+        </div>
+        <div className="flex items-center flex-1 min-w-0">
+          <div className="text-sm font-medium leading-5 truncate">
+            {expense.cost}
           </div>
         </div>
         <div>
