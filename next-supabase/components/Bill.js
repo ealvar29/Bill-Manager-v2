@@ -1,5 +1,6 @@
 import { supabase } from "../lib/initSupabase";
 import { useState } from "react";
+import moment from "../node_modules/moment";
 
 export default function Bill({ expense, onDelete }) {
   const [isCompleted, setIsCompleted] = useState(expense.is_complete);
@@ -19,53 +20,36 @@ export default function Bill({ expense, onDelete }) {
     }
   };
   return (
-    <li
-      onClick={(e) => {
-        e.preventDefault();
-        toggle();
-      }}
-      className="block w-full transition duration-150 ease-in-out cursor-pointer hover:bg-gray-200 focus:outline-none focus:bg-gray-200"
-    >
-      <div className="flex items-center px-4 py-4 sm:px-6">
-        <div className="flex items-center flex-1 min-w-0">
-          <div className="text-sm font-medium leading-5 truncate">
-            {expense.billname}
-          </div>
-        </div>
-        <div className="flex items-center flex-1 min-w-0">
-          <div className="text-sm font-medium leading-5 truncate">
-            {expense.cost}
-          </div>
-        </div>
-        <div>
+    <>
+      <tr className="text-sm text-center text-gray-600 bg-gray-100 border-b">
+        <td className="p-2 border-r">{expense.billname}</td>
+        <td className="p-2 border-r">{expense.cost}</td>
+        <td className="p-2 border-r">
+          {moment(expense.due_date).format("MMMM / Do / YYYY")}
+        </td>
+        <td className="p-2 border-r">{expense.type}</td>
+        <td className="p-2 border-r">
           <input
             className="cursor-pointer"
             onChange={(e) => toggle()}
             type="checkbox"
             checked={isCompleted ? true : ""}
           />
-        </div>
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            onDelete();
-          }}
-          className="w-4 h-4 ml-2 border-2 rounded hover:border-black"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="gray"
+        </td>
+        <td className="p-2 border-r">
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              toggle();
+              onDelete();
+            }}
+            className="p-2 text-xs font-thin text-white bg-red-500 hover:shadow-lg"
           >
-            <path
-              fillRule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </button>
-      </div>
-    </li>
+            Remove
+          </button>
+        </td>
+      </tr>
+    </>
   );
 }

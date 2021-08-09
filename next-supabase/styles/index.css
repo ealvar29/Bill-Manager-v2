@@ -26,13 +26,6 @@
 
 /* Your own custom utilities */
 
-html,
-body,
-#__next {
-  height: 100vh;
-  min-height: 100vh;
-}
-
 h1 {
   font-size: 4rem;
   font-weight: bold;
